@@ -1,76 +1,84 @@
-#pragma once
 #include <arisen/arisen.hpp>
 #include <arisen/print.hpp>
-#include <string>
+
+using namespace arisen;
+using std::string;
 
 /**
- * @defgroup ddns dweb
- * @ingroup dwebcontracts
- * 
- * ddns contract
- * 
- * @details The dDNS contract defines the structures and actions that allow users to create, modify
- * and remove a NameDrive (ND) record for a dTLD.
- * @{
- */
+  * @defgroup ddns
+  * @ingroup ddnscontracts
+  * 
+  * dDNS Contract
+  * 
+  * @details ddns contract defines the structures and actions that allow users to
+  * add, modify or delete records for a decentralized domain.
+  * @{
+  */
 class [[arisen::contract("ddns")]] ddns : public arisen::contract {
-
-  public: 
+  public:
     ddns(name receiver, name code, datastream<const char*> ds): contract(receiver, code, ds) {}
+    /**
+      * Add action
+      *
+      * @details Allows `domain` to add a dDNS record.
+      * @param domain - The domain the record is being created for.
+      * @param rname - The record name
+      * @param ttl - The time-to-live (TTL) for the record
+      * @param rtype - The record type
+      * @param rclass - The record class
+      * @param rdata - The record data
+      *
+      * @pre Record name must not exist with same type, for the given domain
+      * @pre The record type must be valid
+      * @pre The record class must be valid
+      * If validation is successful, a new dDNS record will be created for the domain.
+      */
+    [[arisen::action]]
+    void add( const name& domain,
+                   const name& rname,
+                   const uint64_t& ttl,
+                   const string& rtype,
+                   const string& rclass,
+                   const string& rdata);
 
     /**
-     * Regnd Action.
-     * 
-     * @details Allows `domain` owner to create or modify a `record_name` for a 
-     * NameDrive (ND) and its corresponding `dweb_key`.
-     * @param domain - the domain the ND record is associated with.
-     * @param record_name - the name of the ND record ie. `nd1`.
-     * @param dweb_key - the ND's dWeb discovery key.
-     * @param record_num - (auto) primary key/indice for ND record.
-     * @pre dWeb discovery key must be valid.
-     * @pre `record_name` must be unique.
-     *
-     * If validation is successful a new entry in the ddns table for `domain` will be created.
-     */
-     [[arisen::action]]
-     void regnd( const name& domain,
-                       const string& record_name,
-                       const string& dweb_key);
-     
-   /**
-    *
-    * RemoveND Action
-    * @details This action removes a NameDrive record from the Root System.
-    * @param `domain` - Domain associated with the record being removed.
-    * @param `record_name` - ND record_name being removed.
+      * Erase Action
+      *
+      * @details Erase an already existent record from `domain`
+      * 
+      * @param domain - The domain the record is being removed from
+      * @param rname - The record being removed
+      *
+      * @pre Record must exist
+      * If validation is successful, the record for the given domain will be erased.
     */
     [[arisen::action]]
-    void removend( const name& domain,
-                            const string& record_name);
-    
+    void erase( const name& domain,
+                      const name& rname);
 
-    [[arisen::notify]]
-    void notify( name domain,
-                      string msg);
-  
+    [[arisen::action]]
+    void notify( const name& domain,
+                      const string& msg);
+
   private:
-    struct [[arisen::table]] rdata {
+    struct [[arisen::table]] record {
       name domain;
-      string record_name;
-      string dweb_key;
-      string full_record;
-      uint64_t record_num;
-      
-      uint64_t primary_key() const { return record_num; }
+      name rname;
+      uint64_t ttl;
+      string rtype;
+      string rclass;
+      string rdata;
+
+      uint64_t primary_key() const {  return rname.value; }
       uint64_t get_secondary_1() const { return domain.value; }
     };
 
-   void send_summary( name domain,
-                                  string message);
+    void send_summary(  const name& domain,
+                                     const string& message);
 
-   typedef arisen::multi_index<"rdatadb"_n, rdata,
-     indexed_by<"bydomain"_n, const_mem_fun<rdata, uint64_t, &rdata::get_secondary_1>>
-   > ddns_index;
-   
+    typedef arisen::multi_index<"records"_n, record,
+      indexed_by<"byrecord"_n, const_mem_fun<record, uint64_t, &record::get_secondary_1>>
+    > record_index;
+
+/** @}*/ // end of @defgroup ddns
 };
-/** @}*/ // end of @defgroup ddns dweb
