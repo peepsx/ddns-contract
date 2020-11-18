@@ -3,7 +3,7 @@
 void add( const name&  domain,
                const name&  rname,
                const uint64_t&  ttl,
-               const string&  rtype
+               const string&  rtype,
                const string&  rclass,
                const string& rdata) {
 
