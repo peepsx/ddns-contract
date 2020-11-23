@@ -20,7 +20,7 @@ void add( const name&  domain,
       row.rclass = rclass;
       row.rdata = rdata;      
     });
-    send_summary(domain, " successfully added record");
+    // send_summary(domain, " successfully added record");
   }
   else {
     ddnsrecords.modify(iterator, rname, [&]( auto& row ) {
@@ -31,7 +31,7 @@ void add( const name&  domain,
       row.rclass = rclass;
       row.rdata = rdata;
     });
-    send_summary(domain, " successfully modified record");
+   // send_summary(domain, " successfully modified record");
   }
 };
 
@@ -42,7 +42,7 @@ void erase(  const name&  domain,
   auto iterator = ddnsrecords.find(rname.value);
   check(iterator != ddnsrecords.end(), "Record does not exist");
   ddnsrecords.erase(iterator);
-  send_summary(domain, " successfully erased dDNS record");
+ // send_summary(domain, " successfully erased dDNS record");
 };
 
 void notify(  const name&  domain,
@@ -51,12 +51,12 @@ void notify(  const name&  domain,
   require_recipient(domain);
 };
 
-void send_summary(  const name&  domain,
-                                 const string&  message) {
-  action(
-    permission_level{get_self(), "active"_n},
-    get_self(),
-    "notify"_n,
-    std::make_tuple(domain, name{domain}.to_string() + message)
-  ).send();  
-};
+// void send_summary(  const name&  domain,
+//                                  const string&  message) {
+//   action(
+//     permission_level{get_self(), "active"_n},
+//     get_self(),
+//     "notify"_n,
+//     std::make_tuple(domain, name{domain}.to_string() + message)
+//   ).send();  
+// };
