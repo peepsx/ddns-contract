@@ -76,7 +76,7 @@ class [[arisen::contract("ddns")]] ddns : public arisen::contract {
     // void send_summary(  const name& domain,
     //                                  const string& message);
 
-    typedef arisen::multi_index<"records"_n,rname,indexed_by<"byrecord"_n,const_mem_fun<record,uint64_t,&rname::get_secondary_1>> > record_index
+    typedef arisen::multi_index<"records"_n, record,indexed_by<"byrecord"_n, const_mem_fun<record, uint64_t, &record::get_secondary_1>> > record_index;
 
 /** @}*/ // end of @defgroup ddns
 };
