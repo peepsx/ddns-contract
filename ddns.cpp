@@ -8,7 +8,7 @@ void add( const name&  domain,
                const string& rdata) {
 
   require_auth(domain);
-  record_index ddnsrecords(get_first_receiver(), get_first_receiver.value);
+  record_index ddnsrecords(get_first_receiver(), get_first_receiver().value);
   auto iterator = ddnsrecords.find(rname.value);
   if( iterator == ddnsrecords.end() )
   {
