@@ -47,7 +47,7 @@ void erase(  const name&  domain,
 
 void notify(  const name&  domain,
                    const string&  msg) {
-  require_auth(get_self());
+  require_auth(domain);
   require_recipient(domain);
 };
 
