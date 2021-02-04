@@ -69,13 +69,13 @@ class [[arisen::contract("ddns")]] ddns : public arisen::contract {
       string rclass;
       string rdata;
 
-      uint64_t primary_key() const {  return rname.value; }
-      uint64_t get_secondary_1() const { return domain.value; }
+      uint64_t primary_key()const {  return rname.value; }
+      uint64_t get_secondary_1()const { return domain.value; }
     };
 
     // void send_summary(  const name& domain,
     //                                  const string& message);
 
-    typedef arisen::multi_index<"records"_n,record,indexed_by<"byrecord"_n,const_mem_fun<record,uint64_t,&record::get_secondary_1>>> record_index;
+    typedef arisen::multi_index<"records"_n,record,indexed_by<"byrecord"_n,const_mem_fun<record,uint64_t,&record::get_secondary_1 >>> record_index;
 /** @}*/ // end of @defgroup ddns
 };
